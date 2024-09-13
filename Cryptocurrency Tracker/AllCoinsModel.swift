@@ -64,6 +64,11 @@ struct AllCoinsModel : Identifiable,Codable,Hashable {
     let atlDate: String?
     let lastUpdated: String?
     let sparklineIn7D: SparklineIn7D?
+    
+    var holdingsQuantity: Double?
+    var holdingsValue : Double{
+        (holdingsQuantity ?? 0) * (currentPrice ?? 0)
+    }
 }
 struct SparklineIn7D : Codable,Hashable {
    let price: [Double]?

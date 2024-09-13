@@ -8,7 +8,24 @@
 //import SwiftUI
 //
 //struct EditPortfolioView: View {
-//    @State private var selectedCoin = AllCoinsModel?.self
+//    @State private var selectedCoin : AllCoinsModel?
+//    
+//    @State private var allCoins = [AllCoinsModel]()
+//    @State private var searchText = ""
+//    @State private var showEditPortfolioView = false
+//    
+//    var filteredAllCoins : [AllCoinsModel]{
+//        if searchText.isEmpty {
+//            return allCoins
+//        }else {
+//            return allCoins.filter { coin in
+//                (coin.name?.lowercased() ?? "").contains(searchText.lowercased()) ||
+//                (coin.id?.lowercased() ?? "").contains(searchText.lowercased()) ||
+//                (coin.symbol?.lowercased() ?? "").contains(searchText.lowercased())
+//            }
+//        }
+//    }
+//
 //    var body: some View {
 //        ScrollView(.horizontal,showsIndicators: false) { //show indicator kya karta h
 //            LazyHStack{
@@ -38,7 +55,21 @@
 //                        )
 //                }.padding(.leading,2)
 //            }
+//        }.task {
+//            do {
+//                allCoins = try await fetchAllCoins()
+//            } catch {
+//                print("Failed to fetch all coins \(error.localizedDescription)")
+//            }
 //        }
+//    }
+//    func fetchAllCoins() async throws -> [AllCoinsModel]{
+//        guard let url = URL(string: "https://api.coingecko.com/api/v3/coins/markets?vs_currency=inr&order=market_cap_desc&sparkline=true&price_change_percentage=24h") else {
+//            throw URLError(.badURL) }
+//        let (data,_) = try await URLSession.shared.data(from: url)
+//        let decoder = JSONDecoder()
+//        decoder.keyDecodingStrategy = .convertFromSnakeCase
+//        return try decoder.decode([AllCoinsModel].self, from: data)
 //    }
 //}
 //
