@@ -1,5 +1,5 @@
 //
-//  ContentView.swift
+//  HomeView.swift
 //  Cryptocurrency Tracker
 //
 //  Created by Ujjwal Arora on 12/09/24.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct HomeView: View {
     @State private var selectedCoin : AllCoinsModel?
     @State private var quantityText = ""
     var currentValue : Double? {
@@ -276,6 +276,6 @@ struct ContentView: View {
 
 #Preview {
     NavigationStack{
-        ContentView()
+        HomeView()
     }
 }

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-//enum bna lena sort ke liye ye na ho alag alag karde
 struct CoinDetailView: View {
     var coin : AllCoinsModel
     var body: some View {
