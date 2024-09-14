@@ -12,7 +12,11 @@ struct CoinChartView: View {
     let coin : AllCoinsModel
     @State private var visibleCount = 0
     private var filteredPrices : [Double] {
-        currentTimeInterval == "7 Days" ? coin.sparklineIn7D?.price ?? [] : coin.sparklineIn7D?.price?.suffix(24) ?? []
+        if let pricesPoints = coin.sparklineIn7D?.price{
+           return currentTimeInterval == "7 Days" ? pricesPoints : pricesPoints.suffix(24)
+        }else {
+            return []
+        }
     }
     private var lineColor: Color {
         (filteredPrices.last ?? 0) - (filteredPrices.first ?? 0) >= 0 ? Color.green : Color.red
@@ -30,6 +34,8 @@ struct CoinChartView: View {
     
     
     var body: some View {
+        
+        
         Text(coin.id ?? "")
         Text(coin.sparklineIn7D?.price?.count.formatted() ?? "")
         Text(coin.sparklineIn7D?.price?.first?.formatted() ?? "")
@@ -83,6 +89,8 @@ struct CoinChartView: View {
                     animateChart()
                 })
 
+        }else {
+            Text("No Price History Available")
         }
     }
     private var chartGrids: some View {
