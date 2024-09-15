@@ -8,24 +8,29 @@
 import SwiftUI
 
 struct EditPortfolioView: View {
-    @ObservedObject var vm : HomeViewModel
+    @Environment(\.dismiss) var dismiss
+    @EnvironmentObject var homeVM : HomeViewModel
+    @StateObject var portfolioVM : EditPortfolioViewModel
+    init(homeVM : HomeViewModel) {
+        _portfolioVM = StateObject(wrappedValue: EditPortfolioViewModel(vm: homeVM))
+    }
     
     var body: some View {
-        ScrollView{
-            
+        VStack{
+            searchBarVisibility
+
             coinList
+            
             portfolioInputSection
+            Spacer()
             
         }
         .navigationTitle("Edit Portfolio")
-        .searchable(text: $vm.searchText)
         .navigationBarBackButtonHidden()
         .toolbar{
             ToolbarItem(placement: .topBarLeading) {
                 Button(action: {
-                    vm.quantityText = ""
-                    vm.selectedCoin = nil
-                    vm.showEditPortfolioView = false
+                    dismiss()
                 }, label: {
                     Text("Cancel")
                 })
@@ -33,13 +38,13 @@ struct EditPortfolioView: View {
             
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
-                    vm.saveQuantity()
-                    vm.quantityText = ""
-                    vm.selectedCoin = nil
-                    vm.showEditPortfolioView = false
+                    portfolioVM.saveQuantity()
+                    homeVM.loadSavedPortfolioCoins()
+                    dismiss()
+                    
                 }, label: {
                     Text("Save")
-                        .opacity(Double(vm.quantityText) ?? 0 > 0 ? 1 : 0)
+                        .opacity(Double(portfolioVM.quantityText) ?? 0 >= 0 ? 1 : 0)
                 })
             }
             
@@ -49,24 +54,24 @@ struct EditPortfolioView: View {
 
 #Preview {
     NavigationStack{
-        EditPortfolioView(vm: HomeViewModel())
+        EditPortfolioView(homeVM: HomeViewModel())
+            .environmentObject(HomeViewModel())
     }
 }
 
 extension EditPortfolioView {
-    
     private var coinList : some View{
         ScrollView(.horizontal) {
             LazyHStack{
-                ForEach(vm.sortedAndFilteredAllCoins) { coin in
+                ForEach(homeVM.sortedAndFilteredAllCoins) { coin in
                     Button(action: {
                         withAnimation(.easeIn) {
-                            vm.selectedCoin = coin
-                            vm.quantityText = ""
+                            portfolioVM.selectedCoin = coin
+                            portfolioVM.quantityText = ""
                         }
                     }, label: {
                         VStack{
-                            AsyncImage(url: URL(string: coin.image ?? ""), scale: 5)
+                            CoinImageView(imageUrlSting: coin.image ?? "")
                             Text(coin.symbol?.uppercased() ?? "")
                                 .font(.headline)
                             
@@ -76,20 +81,21 @@ extension EditPortfolioView {
                                 .multilineTextAlignment(.center)
                         }
                         .foregroundStyle(.black)
-                        .frame(width: 70, height: 90)
+                        .frame(width: 70, height: 110)
                         .padding()
                         .background(RoundedRectangle(cornerRadius: 10)
-                            .stroke(coin == vm.selectedCoin ? Color.green : Color.gray, lineWidth: 2)
+                            .stroke(coin == portfolioVM.selectedCoin ? Color.green : Color.gray, lineWidth: 2)
                         )
                     })
                     
                 }
             }.padding()
-        }
+        }.frame(height: 200)
+
     }
     private var portfolioInputSection : some View {
         VStack{
-            if let item = vm.selectedCoin{
+            if let item = portfolioVM.selectedCoin{
                 
                 HStack{
                     Text("Current Price of \(item.symbol?.uppercased() ?? "") :")
@@ -99,7 +105,7 @@ extension EditPortfolioView {
                 Divider()
                 HStack{
                     Text("Current holdings quantity :")
-                    TextField(item.holdingsQuantity?.quantityFormatter() ?? "0.0", text: $vm.quantityText)
+                    TextField(item.holdingsQuantity?.quantityFormatter() ?? "0.0", text: $portfolioVM.quantityText)
                         .multilineTextAlignment(.trailing)
                         .keyboardType(.decimalPad) //will stop from negative value as well
                 }
@@ -107,11 +113,17 @@ extension EditPortfolioView {
                 HStack{
                     Text("Current holdings value :")
                     Spacer()
-                    Text((vm.quantityText.isEmpty ? item.holdingsValue.currencyFormatter() : vm.calculatedValue?.currencyFormatter()) ?? "" )
+                    Text((portfolioVM.quantityText.isEmpty ? item.holdingsValue.currencyFormatter() : portfolioVM.calculatedValue?.currencyFormatter()) ?? "" )
                 }
             }
         }
         .padding()
         .font(.headline)
+    }
+    private var searchBarVisibility : some View{
+        Text("Click to enter the quantity")
+            .font(.footnote)
+            .searchable(text: $homeVM.searchText) //for some reason seacrhable does work with scrollView maybe some interference so used this
+        
     }
 }

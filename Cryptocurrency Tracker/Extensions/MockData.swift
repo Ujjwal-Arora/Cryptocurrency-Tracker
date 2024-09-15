@@ -1,5 +1,5 @@
 //
-//  Example.swift
+//  MockData.swift
 //  Cryptocurrency Tracker
 //
 //  Created by Ujjwal Arora on 13/09/24.
@@ -7,8 +7,8 @@
 
 import Foundation
 
-class Example {
-    let coin = CoinModel(
+struct MockData {
+    static var exampleCoin = CoinModel(
        id: "bitcoin",
        symbol: "btc",
        name: "Bitcoin",

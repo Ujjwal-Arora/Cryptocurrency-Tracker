@@ -13,57 +13,54 @@ struct RowView: View {
         GeometryReader(content: { fullView in
             HStack{
                 leftColumn
-                
 
                 Spacer()
                 
                 if showHoldingsColumn{
                     centreColumn
-                        .frame(width: fullView.size.width/3,alignment: .leading)
+                        .frame(width: fullView.size.width/3.3,alignment: .leading)
                 }
                 rightColumn
-                    .frame(width: fullView.size.width/3,alignment: .leading)
-            }
-            .font(.subheadline)
-            .padding(.bottom)
+                    .frame(width: fullView.size.width/3.4,alignment: .leading)
+            }.frame(height: 35)
+            
         })
         
     }
 }
 
 #Preview {
-    RowView(coin : Example().coin, showHoldingsColumn: true)
+    RowView(coin : MockData.exampleCoin, showHoldingsColumn: true)
 }
 
 extension RowView {
     private var leftColumn : some View{
         HStack(alignment : .top){
             Text(coin.marketCapRank?.formatted() ?? "")
-                .bold()
-                .font(.caption)
                 .frame(minWidth: 20)
-            AsyncImage(url: URL(string: coin.image ?? ""),scale: 10)
+            CoinImageView(imageUrlSting: coin.image ?? "", imageSize: .small)
 
             Text(coin.symbol?.uppercased() ?? "")
-                .font(.headline)
-        }
+
+        }.font(.headline)
+
         
     }
     private var centreColumn : some View {
-        VStack(alignment : .leading){
-            Text(coin.holdingsValue.currencyFormatter())
-                .bold()
-            Text(coin.holdingsQuantity?.quantityFormatter() ?? "")
-        }
+            VStack(alignment : .leading,spacing: 0){
+                Text(coin.holdingsValue.currencyFormatter())
+                    .bold()
+                Text(coin.holdingsQuantity?.quantityFormatter() ?? "")
+            }.font(.subheadline)
     }
     private var rightColumn : some View {
-        VStack(alignment : .leading){
+        VStack(alignment : .leading,spacing: 0){
             Text(coin.currentPrice?.currencyFormatter() ?? "")
                 .bold()
             Text(coin.priceChangePercentage24H?.percentageFormatter() ?? "")
                 .foregroundStyle(
                     coin.priceChangePercentage24H ?? 0 >= 0 ? Color.green : Color.red
                 )
-        }
+        }.font(.subheadline)
     }
 }

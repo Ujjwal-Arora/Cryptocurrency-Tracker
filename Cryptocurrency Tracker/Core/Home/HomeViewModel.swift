@@ -11,13 +11,7 @@ import Foundation
 class HomeViewModel: ObservableObject {
     @Published var allCoins = [CoinModel]()
     @Published var searchText = ""
-    @Published var showEditPortfolioView = false
     @Published var showPortfolio = false
-    @Published var selectedCoin : CoinModel?
-    @Published var quantityText = ""
-    var calculatedValue : Double? {
-        return (Double(quantityText) ?? 0) * (selectedCoin?.currentPrice ?? 0)
-    }
     
     var portfolioCoins : [CoinModel] {
         return sortedAndFilteredAllCoins.filter { coin in
@@ -34,6 +28,12 @@ class HomeViewModel: ObservableObject {
             }
         }
     }
+    @Published var sorting : SortOptions = SortOptions.marketCapRankAscending
+    enum SortOptions {
+        case marketCapRankAscending, marketCapRankDescending, holdingsValueAscending, holdingsValueDescending, priceAscending, priceDescending
+    }
+    
+
     var sortedAndFilteredAllCoins : [CoinModel]{
         var filteredAllCoins : [CoinModel]{
             if searchText.isEmpty {
@@ -63,12 +63,6 @@ class HomeViewModel: ObservableObject {
         }
     }
     
-    @Published var sorting : SortOptions = SortOptions.marketCapRankAscending
-    
-    enum SortOptions {
-        case marketCapRankAscending, marketCapRankDescending, holdingsValueAscending, holdingsValueDescending, priceAscending, priceDescending
-    }
-    
     var holdingsValueSum: Double {
         return portfolioCoins.reduce(0) { partialSum, coin in
             partialSum + coin.holdingsValue
@@ -85,19 +79,8 @@ class HomeViewModel: ObservableObject {
         return percentageChange
     }
     
-    func saveQuantity(){
-        if let selectedCoin = selectedCoin, let index = allCoins.firstIndex(where: {$0.id == selectedCoin.id}){
-            allCoins[index].holdingsQuantity = Double(quantityText)
-        }
-        savePortfolioCoins()
-    }
     
-    private func savePortfolioCoins(){
-        if let encodedPortfolioCoins = try? JSONEncoder().encode(portfolioCoins){
-            UserDefaults.standard.setValue(encodedPortfolioCoins, forKey: "portfolioCoins")
-        }
-    }
-    private func loadSavedPortfolioCoins(){
+    func loadSavedPortfolioCoins(){
         if let savedData = UserDefaults.standard.data(forKey: "portfolioCoins"), let decodedPortfolioCoins = try? JSONDecoder().decode([CoinModel].self, from: savedData){
             for portfolioCoin in decodedPortfolioCoins {
                 if let index = allCoins.firstIndex(where: {$0.id == portfolioCoin.id}){

@@ -112,5 +112,5 @@ struct CoinChartView: View {
 }
 
 #Preview {
-    CoinChartView(coin: Example().coin)
+    CoinChartView(coin: MockData.exampleCoin)
 }

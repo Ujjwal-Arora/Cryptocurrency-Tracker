@@ -9,33 +9,40 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @StateObject private var vm = HomeViewModel()
+    @EnvironmentObject private var vm : HomeViewModel
     
     var body: some View {
-        
         VStack {
+            if vm.showPortfolio {
+                StatsView(title: "Portfolio Value", value: vm.holdingsValueSum.currencyFormatter(), percentageChange: vm.holdingsValuePercentageChange)
+            }
             header
             
-            coinList
-                .navigationDestination(for: CoinModel.self) { coin in
-                    CoinDetailView(coin: coin)
+            List {
+                ForEach(vm.showPortfolio ? vm.portfolioCoins : vm.sortedAndFilteredAllCoins) { coin in
+                    NavigationLink(value: coin) {
+                        RowView(coin: coin, showHoldingsColumn: vm.showPortfolio)
+                    }
                 }
-            
-        }.navigationDestination(isPresented: $vm.showEditPortfolioView, destination: {
-            EditPortfolioView(vm: vm)
-        })
-        .navigationTitle(vm.showEditPortfolioView ? "Portfolio Prices" : "Live Prices" )
+            }
+            .listStyle(.plain)
+            .navigationDestination(for: CoinModel.self) { coin in
+                CoinDetailView(coin: coin)
+            }
+        }
+        .navigationTitle(vm.showPortfolio ? "Portfolio Prices" : "Live Prices" )
         .navigationBarTitleDisplayMode(.inline)
         .toolbar{
             
             ToolbarItem(placement: .topBarLeading) {
-                Button(action: {
-                    vm.showEditPortfolioView = true
-                }, label: {
+                NavigationLink {
+                    EditPortfolioView(homeVM: vm)
+                } label: {
                     Image(systemName: "plus.circle")
                         .fontWeight(.semibold)
                         .foregroundStyle(.black)
-                })
+                }
+                
             }
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: {
@@ -56,77 +63,44 @@ struct HomeView: View {
 
 #Preview {
     NavigationStack{
-        HomeView()
+        HomeView().environmentObject(HomeViewModel())
     }
 }
 
 extension HomeView{
     
     private var header : some View {
-        HStack{
-            Button(action: {
-                if vm.sorting == .marketCapRankAscending{
-                    vm.sorting = .marketCapRankDescending
-                }else{
-                    vm.sorting = .marketCapRankAscending
-                }
-            }, label: {
-                HStack {
-                    Text("Coin")
-                    if vm.sorting == .marketCapRankAscending{
-                        Image(systemName: "chevron.up")
-                    }else if vm.sorting == .marketCapRankDescending {
-                        Image(systemName: "chevron.down")
-                    }
-                }
-            }).padding(.horizontal)
-            Spacer()
-            if vm.showPortfolio {
-                Button(action: {
-                    if vm.sorting == .holdingsValueAscending{
-                        vm.sorting = .holdingsValueDescending
-                    }else{
-                        vm.sorting = .holdingsValueAscending
-                    }
-                }, label: {
-                    HStack {
-                        Text("Holdings")
-                        if vm.sorting == .holdingsValueAscending{
-                            Image(systemName: "chevron.up")
-                        }else if vm.sorting == .holdingsValueDescending {
-                            Image(systemName: "chevron.down")
-                        }
-                    }
-                }).padding(.horizontal)
+        GeometryReader(content: { fullView in
+            HStack{
+                toggleSortOption(title: "Coin", option1: .marketCapRankAscending, option2: .marketCapRankDescending)
+                    .padding(.leading,22)
                 
-                //.frame(width: row.size.width / 3.3)
-            }
-            Button(action: {
-                if vm.sorting == .priceAscending{
-                    vm.sorting = .priceDescending
-                }else{
-                    vm.sorting = .priceAscending
+                Spacer()
+                
+                if vm.showPortfolio {
+                    toggleSortOption(title: "Holding", option1: .holdingsValueAscending, option2: .holdingsValueDescending)
+                        .frame(width: fullView.size.width/3.8,alignment: .leading)
                 }
-            }, label: {
-                HStack {
-                    Text("Price")
-                    if vm.sorting == .priceAscending{
-                        Image(systemName: "chevron.up")
-                    }else if vm.sorting == .priceDescending {
-                        Image(systemName: "chevron.down")
-                    }
-                }
-            }).padding(.horizontal)
-        }
+                
+                toggleSortOption(title: "Price", option1: .priceAscending, option2: .priceDescending)
+                    .frame(width: fullView.size.width/2.9,alignment: .leading)
+
+            }.foregroundStyle(.gray)
+        }).frame(height: 20)
+        
     }
-    private var coinList : some View{
-        List {
-            ForEach(vm.showPortfolio ? vm.portfolioCoins : vm.sortedAndFilteredAllCoins) { coin in
-                NavigationLink(value: coin) {
-                    RowView(coin: coin, showHoldingsColumn: vm.showPortfolio)
-                }.listRowInsets(.none)
+    private func toggleSortOption(title : String, option1 : HomeViewModel.SortOptions, option2 : HomeViewModel.SortOptions) -> some View{
+        Button(action: {
+            vm.sorting = (vm.sorting == option1) ? option2 : option1
+        }, label: {
+            HStack {
+                Text(title)
+                if vm.sorting == option1{
+                    Image(systemName: "chevron.up")
+                }else if vm.sorting == option2 {
+                    Image(systemName: "chevron.down")
+                }
             }
-        }
-        .listStyle(.plain)
+        })
     }
 }

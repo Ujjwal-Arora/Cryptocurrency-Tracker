@@ -10,7 +10,7 @@ import Foundation
 
 extension Double{
     func currencyFormatter() -> String{
-        return self.formatted(.currency(code: "inr").precision(.fractionLength(0)))
+        return self.formatted(.currency(code: "inr").precision(.fractionLength(0...4)))
     }
     func percentageFormatter() -> String{
         return self.formatted(.number.precision(.fractionLength(2))) + "%"
