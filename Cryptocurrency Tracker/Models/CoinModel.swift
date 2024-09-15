@@ -1,5 +1,5 @@
 //
-//  AllCoinsModel.swift
+//  CoinModel.swift
 //  Cryptocurrency Tracker
 //
 //  Created by Ujjwal Arora on 12/09/24.
@@ -48,7 +48,7 @@ import Foundation
   }
 */
 
-struct AllCoinsModel : Identifiable,Codable,Hashable {
+struct CoinModel : Identifiable,Codable,Hashable {
     let id, symbol, name: String?
     let image: String?
     let currentPrice : Double?

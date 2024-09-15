@@ -9,7 +9,7 @@ import SwiftUI
 import Charts
 
 struct CoinChartView: View {
-    let coin : AllCoinsModel
+    let coin : CoinModel
     @State private var visibleCount = 0
     private var filteredPrices : [Double] {
         if let pricesPoints = coin.sparklineIn7D?.price{
@@ -34,12 +34,7 @@ struct CoinChartView: View {
     
     
     var body: some View {
-        
-        
-        Text(coin.id ?? "")
-        Text(coin.sparklineIn7D?.price?.count.formatted() ?? "")
-        Text(coin.sparklineIn7D?.price?.first?.formatted() ?? "")
-        
+                
         if !filteredPrices.isEmpty{
             
             VStack(spacing : 20){
@@ -62,7 +57,6 @@ struct CoinChartView: View {
                         )
                     }
                 }
-                
                 .foregroundStyle(lineColor)
                 .shadow(color: lineColor, radius: 5)
                 .shadow(color: lineColor, radius: 10, y: 10)

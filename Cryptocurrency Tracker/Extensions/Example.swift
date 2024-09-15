@@ -8,7 +8,7 @@
 import Foundation
 
 class Example {
-    let coin = AllCoinsModel(
+    let coin = CoinModel(
        id: "bitcoin",
        symbol: "btc",
        name: "Bitcoin",
