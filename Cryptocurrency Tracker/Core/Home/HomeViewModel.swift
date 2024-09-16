@@ -28,6 +28,15 @@ class HomeViewModel: ObservableObject {
             }
         }
     }
+    var maxGainer : CoinModel?{
+        allCoins.max(by: {$0.priceChangePercentage24H ?? 0 < $1.priceChangePercentage24H ?? 0})
+
+    }
+    var maxLoser : CoinModel?{
+        allCoins.min(by: {$0.priceChangePercentage24H ?? 0 < $1.priceChangePercentage24H ?? 0})
+
+    }
+
     @Published var sorting : SortOptions = SortOptions.marketCapRankAscending
     enum SortOptions {
         case marketCapRankAscending, marketCapRankDescending, holdingsValueAscending, holdingsValueDescending, priceAscending, priceDescending

@@ -21,7 +21,7 @@ struct RowView: View {
                         .frame(width: fullView.size.width/3.3,alignment: .leading)
                 }
                 rightColumn
-                    .frame(width: fullView.size.width/3.4,alignment: .leading)
+                    .frame(width: fullView.size.width/3.6,alignment: .leading)
             }.frame(height: 35)
             
         })

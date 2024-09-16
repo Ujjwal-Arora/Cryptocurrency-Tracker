@@ -10,13 +10,12 @@ import SwiftUI
 struct HomeView: View {
     
     @EnvironmentObject private var vm : HomeViewModel
-    
+ 
     var body: some View {
         VStack {
-            if vm.showPortfolio {
-                StatsView(title: "Portfolio Value", value: vm.holdingsValueSum.currencyFormatter(), percentageChange: vm.holdingsValuePercentageChange)
-            }
-            header
+            highlightBar
+            
+            headerTitles
             
             List {
                 ForEach(vm.showPortfolio ? vm.portfolioCoins : vm.sortedAndFilteredAllCoins) { coin in
@@ -69,25 +68,35 @@ struct HomeView: View {
 
 extension HomeView{
     
-    private var header : some View {
+    private var headerTitles : some View {
         GeometryReader(content: { fullView in
             HStack{
                 toggleSortOption(title: "Coin", option1: .marketCapRankAscending, option2: .marketCapRankDescending)
-                    .padding(.leading,22)
+                    .padding(.leading,25)
                 
                 Spacer()
                 
                 if vm.showPortfolio {
                     toggleSortOption(title: "Holding", option1: .holdingsValueAscending, option2: .holdingsValueDescending)
-                        .frame(width: fullView.size.width/3.8,alignment: .leading)
+                        .frame(width: fullView.size.width/3.5,alignment: .leading)
                 }
                 
                 toggleSortOption(title: "Price", option1: .priceAscending, option2: .priceDescending)
-                    .frame(width: fullView.size.width/2.9,alignment: .leading)
+                    .frame(width: fullView.size.width/3.1,alignment: .leading)
 
-            }.foregroundStyle(.gray)
+            }
+            .foregroundStyle(.gray)
+            .font(.subheadline)
         }).frame(height: 20)
-        
+    }
+    private var highlightBar : some View{
+        HStack{
+
+            StatsView(title: "My Portfolio", value: vm.holdingsValueSum.rounded().currencyFormatter(), percentageChange: vm.holdingsValuePercentageChange)
+            
+                StatsView(title: "Top Gainer", value: vm.maxGainer?.symbol?.uppercased() ?? "", percentageChange: vm.maxGainer?.priceChangePercentage24H)
+                StatsView(title: "Top Loser", value: vm.maxLoser?.symbol?.uppercased() ?? "", percentageChange: vm.maxLoser?.priceChangePercentage24H)
+            }
     }
     private func toggleSortOption(title : String, option1 : HomeViewModel.SortOptions, option2 : HomeViewModel.SortOptions) -> some View{
         Button(action: {

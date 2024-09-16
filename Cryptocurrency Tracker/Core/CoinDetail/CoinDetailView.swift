@@ -11,25 +11,34 @@ struct CoinDetailView: View {
     var coin : CoinModel
     var body: some View {
         ScrollView {
+            
             CoinChartView(coin: coin)
+                .padding(.vertical)
             
-            StatsView(title: "Current holdings",
-                      value: coin.holdingsValue.currencyFormatter()
-            )
-            
-            StatsView(title: "Market Cap (24hr)",
-                      value: coin.marketCap?.currencyFormatter() ?? "",
-                      percentageChange: coin.marketCapChangePercentage24H
-            )
-            
-            StatsView(title: "Current Price (24hr)",
-                      value: coin.currentPrice?.formatted(.currency(code: "inr")) ?? "",
-                      percentageChange: coin.priceChangePercentage24H
-            )
-            
-            StatsView(title: "Volume",
-                      value: coin.totalVolume?.formatted() ?? ""
-            )
+            VStack {
+                HStack {
+                    StatsView(title: "Market Cap (24hr)",
+                              value: coin.marketCap?.currencyFormatter() ?? "",
+                              percentageChange: coin.marketCapChangePercentage24H
+                    )
+                    StatsView(title: "Current Price (24hr)",
+                              value: coin.currentPrice?.formatted(.currency(code: "inr")) ?? "",
+                              percentageChange: coin.priceChangePercentage24H
+                    )
+                }
+                
+                
+                HStack{
+                    StatsView(title: "Current holdings",
+                              value: coin.holdingsValue.currencyFormatter()
+                    )
+                    Spacer()
+                    StatsView(title: "Volume",
+                              value: coin.totalVolume?.formatted() ?? ""
+                    )
+                }
+                
+            }
             
         }
         .navigationTitle(coin.name ?? "no name")
