@@ -22,6 +22,25 @@ This is a SwiftUI-based Crypto Tracker application that fetches and displays cry
 
 ## Screenshots
 
+### Splash Screen
+
+<img src="Screenshots/splash-screen.png" alt="Splash Screen" width="300"/>
+
+### Coin List
+
+<img src="Screenshots/coin-list.png" alt="Coin List Screen" width="300"/>
+
+### Coin Details with Chart
+
+<img src="Screenshots/coin-detail-chart.png" alt="Coin Detail Screen with Chart" width="300"/>
+
+### Portfolio Management
+
+<img src="Screenshots/portfolio-screen.png" alt="Portfolio Screen" width="300"/>
+
+
+## Screenshots
+
 ### Coin List
 
 ![Coin List Screen](Screenshots/coin-list.png){:width="300"}
