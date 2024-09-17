@@ -24,7 +24,7 @@ This is a SwiftUI-based Crypto Tracker application that fetches and displays cry
 
 ### Coin List
 
-![Coin List Screen](Screenshots/coin-list.png)
+![Coin List Screen](Screenshots/coin-list.png){:width="300"}
 
 ### Coin Details with Chart
 
