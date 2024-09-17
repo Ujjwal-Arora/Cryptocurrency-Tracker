@@ -9,7 +9,7 @@ This is a SwiftUI-based Crypto Tracker application that fetches and displays cry
 - **Portfolio Management:** Users can add cryptocurrencies to their portfolio, and the portfolio data is stored locally using `UserDefaults`.
 - **MVVM Architecture:** The app follows the MVVM pattern to separate business logic from UI, ensuring cleaner code and easier maintainability.
 - **Filtering Options:** Users can filter the coins based on market cap, price, and performance.
-- **Responsive UI:** The app's design adapts to different screen sizes and supports both light and dark modes.
+- **Splash Screen:** The app includes a splash screen that appears when the app launches, providing a smooth transition to the main content.
 
 ## Technologies Used
 
@@ -19,3 +19,22 @@ This is a SwiftUI-based Crypto Tracker application that fetches and displays cry
 - **UserDefaults** for storing the user's portfolio locally.
 - **MVVM Architecture** for better organization and scalability.
 - **Async/Await** for handling network requests efficiently.
+
+## Screenshots
+
+### Coin List
+
+![Coin List Screen](Screenshots/coin-list.png)
+
+### Coin Details with Chart
+
+![Coin Detail Screen with Chart](Screenshots/coin-detail-chart.png)
+
+### Portfolio List
+
+![Portfolio Screen](Screenshots/portfolio-list.png)
+
+### Edit Portfolio 
+
+![Edit Portfolio Screen](Screenshots/edit-portfolio-screen.png)
+
